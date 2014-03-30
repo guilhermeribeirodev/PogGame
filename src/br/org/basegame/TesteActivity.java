@@ -1,6 +1,12 @@
 package br.org.basegame;
 
 import android.graphics.Typeface;
+import android.hardware.SensorManager;
+import android.widget.Toast;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import org.andengine.audio.sound.Sound;
 import org.andengine.audio.sound.SoundFactory;
 import org.andengine.engine.camera.Camera;
@@ -14,7 +20,6 @@ import org.andengine.entity.scene.ITouchArea;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.sprite.AnimatedSprite;
-import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.sprite.batch.DynamicSpriteBatch;
 import org.andengine.entity.sprite.batch.SpriteBatch;
 import org.andengine.entity.text.Text;
@@ -32,18 +37,9 @@ import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
-import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
-
-import android.hardware.SensorManager;
-import android.widget.Toast;
-
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
 import org.andengine.util.HorizontalAlign;
 import org.andengine.util.debug.Debug;
 
@@ -64,6 +60,11 @@ public class TesteActivity extends SimpleBaseGameActivity implements IAccelerati
     private static final int CAMERA_WIDTH = 360;
     private static final int CAMERA_HEIGHT = 240;
 
+    private static  float R  = 0.0f;
+
+    private static  float G = 0.0f;
+    private static  float B = 0.0f;
+
     // ===========================================================
     // Fields
     // ===========================================================
@@ -73,7 +74,7 @@ public class TesteActivity extends SimpleBaseGameActivity implements IAccelerati
     private TiledTextureRegion mBoxFaceTextureRegion;
     private TiledTextureRegion mCircleFaceTextureRegion;
 
-    private ITextureRegion mHoleTextureRegion;
+    //private ITextureRegion mHoleTextureRegion;
 
     private int mFaceCount = 0;
 
@@ -125,12 +126,14 @@ public class TesteActivity extends SimpleBaseGameActivity implements IAccelerati
         mBoxFaceTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mBitmapTextureAtlas, this, "face_box_tiled.png", 0, 0, 2, 1); // 64x32
         mCircleFaceTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mBitmapTextureAtlas, this, "face_circle_tiled.png", 0, 32, 2, 1); // 64x32
 
-        mHoleTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mBitmapTextureAtlas, this, "hole.png", 0, 0);
+        //mHoleTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mBitmapTextureAtlas, this, "hole.png", 0, 0);
 
         mBitmapTextureAtlas.load();
 
         mFont = FontFactory.create(getFontManager(), getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32);
         mFont.load();
+
+
 
         // Sounds
 
@@ -153,17 +156,17 @@ public class TesteActivity extends SimpleBaseGameActivity implements IAccelerati
         mScene.setOnSceneTouchListener(this);
 
         //
-        final Sprite faceSprite1 = new Sprite(-50, 0, mHoleTextureRegion, getVertexBufferObjectManager());
+        //final Sprite faceSprite1 = new Sprite(-50, 0, mHoleTextureRegion, getVertexBufferObjectManager());
 
         final SpriteBatch staticSpriteBatch = new SpriteBatch(mBitmapTextureAtlas, 2, getVertexBufferObjectManager());
-        staticSpriteBatch.draw(mHoleTextureRegion, -50, 0, mHoleTextureRegion.getWidth(), mHoleTextureRegion.getHeight(), 2, 2, 1, 1, 1, 1);
+        //staticSpriteBatch.draw(mHoleTextureRegion, -50, 0, mHoleTextureRegion.getWidth(), mHoleTextureRegion.getHeight(), 2, 2, 1, 1, 1, 1);
 
         staticSpriteBatch.submit();
 
         final SpriteBatch dynamicSpriteBatch = new DynamicSpriteBatch(mBitmapTextureAtlas, 2, getVertexBufferObjectManager()) {
             @Override
             public boolean onUpdateSpriteBatch() {
-                draw(faceSprite1);
+                //draw(faceSprite1);
 
 
                 return true;
@@ -310,6 +313,19 @@ public class TesteActivity extends SimpleBaseGameActivity implements IAccelerati
         final Vector2 velocity = Vector2Pool.obtain(mGravityX * -50, mGravityY * -50);
         faceBody.setLinearVelocity(velocity);
         Vector2Pool.recycle(velocity);
+
+
+
+        R = (float) Math.random();
+        G = (float) Math.random();
+        B = (float) Math.random();
+
+        System.out.println(R + "\n  "+G +"\n  "+ B);
+
+        mScene.setBackground(new Background(R, G, B));
+
+
+
 
 
     }
